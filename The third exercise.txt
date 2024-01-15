@@ -64,6 +64,8 @@ fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navCon
         val number:Int = 10;
         var string:String = "S.O.B";
         var isExpanded  by remember{ mutableStateOf("") };
+        Button(onClick = {System.exit(0);})
+        {Text("Quit he application")}
         Button(onClick =  {navController.navigate("B.O.S Android");})
         {Text("Change the screen") }
 
