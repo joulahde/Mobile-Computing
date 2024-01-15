@@ -110,8 +110,13 @@ fun Responding(name: String, modifier: Modifier = Modifier, navController: NavCo
     )
     {
         var isExpanded  by remember{ mutableStateOf("") };
+        Image(
+            painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+            contentDescription = "Contact profile picture"
+        )
         Button(onClick =  {navController.navigateUp();})
-        {Text("Change the screen back")}
+        {Text("Change the screen back");
+         Text(name);}
     }
 }
 
