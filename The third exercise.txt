@@ -36,6 +36,8 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.*
 
+import androidx.compose.ui.*
+
 class MainActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,7 @@ class MainActivity : ComponentActivity()  {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    ComposeNavigation("S.O.B Android");
+                    ComposeNavigation("S.O.B Android", androidx.core.R.drawable.ic_call_answer_video_low);
                 }
             }
         }
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity()  {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavController) {
+fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -83,7 +85,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavCont
         }
         repeat(number) {
             Image(
-                painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                painter = painterResource(myPainter),
                 contentDescription = "Contact profile picture"
             )
             Text(text = " ")
@@ -103,7 +106,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavCont
 }
 
 @Composable
-fun Responding(name: String, modifier: Modifier = Modifier, navController: NavController) {
+fun Responding(name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -111,27 +114,81 @@ fun Responding(name: String, modifier: Modifier = Modifier, navController: NavCo
     {
         var isExpanded  by remember{ mutableStateOf("") };
         Button(onClick =  {navController.navigateUp();})
-        {
-         Image(painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                contentDescription = "Contact profile picture")
-         Text("Change the screen back");
-         Text(name)}
+        {Text("Change the screen back");}
+        repeat(1) {
+            Image(
+                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                painter = painterResource(myPainter),
+                contentDescription = "Contact profile picture"
+            )
+            Text("Change the screen back");
+            Text(name);
+        }
     }
 }
 
 @Composable
-fun ComposeNavigation(name: String) {
+fun ComposeNavigation(name: String, myPainter: Int) {
     val navController:NavHostController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = "S.O.B Android"
     ) {
         composable("S.O.B Android") {
-            Greeting("Greeting", navController = navController)
+            Greeting("Greeting", myPainter, navController = navController)
         }
         composable("B.O.S Android") {
-            Responding("Responding", navController = navController)
+            Responding("Responding", myPainter, navController = navController)
         }
     }
 }
 
+Changes in build.gradle(app)
+dependencies {
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    dependencies {
+    
+    val nav_version = "2.7.6"
+    val appcompat_version = "1.6.1"
+
+    implementation ("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("androidx.navigation:navigation-compose:2.4.2")
+
+    // Java language implementation
+    implementation ("androidx.navigation:navigation-fragment:$nav_version")
+    implementation ("androidx.navigation:navigation-ui:$nav_version")
+
+    // Kotlin
+    implementation ("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation ("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    // Feature module Support
+    implementation ("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+
+    // Testing Navigation
+    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+
+    // Jetpack Compose Integration
+    implementation ("androidx.navigation:navigation-compose:$nav_version")
+
+    implementation ("com.android.support:appcompat-v7:28.0.0")
+
+    implementation("androidx.appcompat:appcompat:$appcompat_version")
+    // For loading and tinting drawables on older versions of the platform
+    implementation("androidx.appcompat:appcompat-resources:$appcompat_version")
+    }
+}
