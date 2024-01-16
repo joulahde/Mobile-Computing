@@ -47,7 +47,20 @@ class MainActivity : ComponentActivity()  {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    ComposeNavigation("S.O.B Android", androidx.core.R.drawable.ic_call_answer_video_low);
+                    try {
+                         InputStream input = new FileInputStream("My_Android.txt");
+                         byte[] array = new byte[100];
+                         input.read(array);
+                         String data = new String(array);
+                         message_txt = data;
+
+                         input.read(array);
+                         String data = new String(array);
+                         painter_txt = data;
+                         input.close();
+                         }catch (Exception e) {
+                              ComposeNavigation("S.O.B Android", androidx.core.R.drawable.ic_call_answer_video_low);
+                         }
                 }
             }
         }
@@ -64,8 +77,24 @@ fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navCon
         val number:Int = 10;
         var string:String = "S.O.B";
         var isExpanded  by remember{ mutableStateOf("") };
-        Button(onClick = {System.exit(0);})
+        Button(onClick = {System.exit(0);
+                           try {
+                                 OutputStream out = new FileOutputStream("My_Android.txt");
+                                 // Converts the string into bytes
+                                 byte[] dataBytes = message_txt.getBytes();
+                                 // Writes data to the output stream
+                                 out.write(dataBytes);
+                                 byte[] dataBytes = painter_txt.getBytes();
+                                 // Writes data to the output stream
+                                 out.write(dataBytes);
+                                 // Closes the output stream
+                                 out.close();
+                                }catch (Exception e) {
+                                     e.getStackTrace();
+                                 }
+         })
         {Text("Quit he application")}
+
         Button(onClick =  {navController.navigate("B.O.S Android");})
         {Text("Change the screen") }
 
