@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import android.R.attr.data
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,7 +30,6 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-
 class MainActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +40,22 @@ class MainActivity : ComponentActivity()  {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val array = ByteArray(100);
-                    try {
+                    var message_txt: String;
+                    var painter_int: Int;
+                    try{
                         val input: InputStream = FileInputStream("My_android.txt");
                         input.read(array, 0, 10);
-                        val message_txt = array.toString();
-                        input.read(array, 10, 10);
-                        val painter_txt = array;
+                        message_txt = array.toString();
+                        val arrays = input.read(array, 10, input.available());
+                        val painter_txt = arrays.toString();
+                        painter_int = painter_txt.toInt()
                         input.close();
-                        //ComposeNavigation(message_txt, painter_txt);}
+                        //ComposeNavigation(message_txt, painter_txt);
                     } catch(e:Exception) {
-                        ComposeNavigation("S.O.B Android", androidx.core.R.drawable.ic_call_answer_video_low);
+                        message_txt = "S.O.B Android";
+                        painter_int = androidx.core.R.drawable.ic_call_answer_video_low;
                     }
+                    ComposeNavigation(message_txt, painter_int);
                 }
             }
         }
@@ -72,10 +75,11 @@ fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navCon
         Button(onClick = {
             try {
                 val out: OutputStream = FileOutputStream("My_android.txt");
-                val dataBytes: ByteArray = name.toByteArray();
+                val dataByte:ByteArray = name.toByteArray();
+                out.write(dataByte);
+                val myPainter_txt: String = myPainter.toString();
+                val dataBytes:ByteArray = myPainter_txt.toByteArray();
                 out.write(dataBytes);
-                //val dataByte: Byte = myPainter.toByte();
-                out.write(myPainter);
                 out.close();
                 System.exit(0);
             } catch(e:Exception){System.exit(0);}
