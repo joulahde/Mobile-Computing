@@ -45,16 +45,13 @@ class MainActivity : ComponentActivity()  {
                     var message_txt: String;
                     var painter_int: Int;
                     try{
-                        File file = new File("c:/My_Android.txt");
-                        val input: InputStream = FileInputStream(file);
+                        val input: InputStream = FileInputStream("/My_android.txt");
                         input.read(array, 0, 10);
                         message_txt = array.toString();
                         val arrays = input.read(array, 10, input.available());
                         val painter_txt = arrays.toString();
-                        painter_int = painter_txt.toInt();
-                        input.flush();
+                        painter_int = painter_txt.toInt()
                         input.close();
-                        //ComposeNavigation(message_txt, painter_txt);
                     } catch(e:Exception) {
                         message_txt = "S.O.B Android";
                         painter_int = androidx.core.R.drawable.ic_call_answer_video_low;
@@ -78,14 +75,12 @@ fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navCon
         var isExpanded  by remember{ mutableStateOf("") };
         Button(onClick = {
             try {
-                File file = new File("c:/My_Android.txt");
-                val out: OutputStream = FileOutputStream(file);
+                val out: OutputStream = FileOutputStream("/My_android.txt");
                 val dataByte:ByteArray = name.toByteArray();
                 out.write(dataByte);
                 val myPainter_txt: String = myPainter.toString();
                 val dataBytes:ByteArray = myPainter_txt.toByteArray();
                 out.write(dataBytes);
-                out.flush();
                 out.close();
                 System.exit(0);
             } catch(e:Exception){System.exit(0);}
