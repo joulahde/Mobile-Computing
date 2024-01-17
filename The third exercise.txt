@@ -187,7 +187,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    dependencies {
     
     val nav_version = "2.7.6"
     val appcompat_version = "1.6.1"
