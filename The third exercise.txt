@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import android.content.ContentProvider.*
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,8 +31,11 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.File;
-import java.io.IOException;
+import androidx.compose.ui.platform.LocalContext
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+
+import android.text.TextUtils.replace
 
 class MainActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,24 +44,15 @@ class MainActivity : ComponentActivity()  {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                 ) {
-                    val array = ByteArray(100);
+                    val context = LocalContext.current;
                     var message_txt: String;
                     var painter_int: Int;
-                    try{
-                        val input: InputStream = FileInputStream("/My_android.txt");
-                        input.read(array, 0, 10);
-                        message_txt = array.toString();
-                        val arrays = input.read(array, 10, input.available());
-                        val painter_txt = arrays.toString();
-                        painter_int = painter_txt.toInt()
-                        input.close();
-                    } catch(e:Exception) {
-                        message_txt = "S.O.B Android";
-                        painter_int = androidx.core.R.drawable.ic_call_answer_video_low;
-                    }
-                    ComposeNavigation(message_txt, painter_int);
+
+                    message_txt = "S.O.B Android";
+                    painter_int = androidx.core.R.drawable.ic_call_answer_video_low;
+                    ComposeNavigation(context, message_txt, painter_int);
                 }
             }
         }
@@ -64,30 +60,41 @@ class MainActivity : ComponentActivity()  {
 }
 
 @Composable
-fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
+fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
+            Modifier
+                    .verticalScroll(rememberScrollState())
     )
     {
         val number:Int = 10;
         var string:String = "S.O.B";
-        var isExpanded  by remember{ mutableStateOf("") };
+        var message_txt:String by remember {mutableStateOf("")};
+        var painter_int:String by remember {mutableStateOf("")};
+        var isExpanded:String  by remember{ mutableStateOf("") };
+
         Button(onClick = {
-            try {
-                val out: OutputStream = FileOutputStream("/My_android.txt");
-                val dataByte:ByteArray = name.toByteArray();
-                out.write(dataByte);
-                val myPainter_txt: String = myPainter.toString();
-                val dataBytes:ByteArray = myPainter_txt.toByteArray();
-                out.write(dataBytes);
-                out.close();
-                System.exit(0);
-            } catch(e:Exception){System.exit(0);}
+            try{
+                val fileInputStream_txt = context.openFileInput("My_android_text.txt");
+                val fileInputStream_img = context.openFileInput("My_android_img.txt");
+                val inputReader_txt: InputStreamReader = InputStreamReader(fileInputStream_txt);
+                val inputReader_img: InputStreamReader = InputStreamReader(fileInputStream_img);
+                message_txt = inputReader_txt.readText();
+                painter_int = inputReader_img.readText();
+                inputReader_txt.close();
+                inputReader_img.close();
+            }
+            catch(e:Exception) {
+                name.replace(name, "S.O.S Android");
+                painter_int = "androidx.core.R.drawable.ic_call_answer";
+            }
         })
-        {Text("Quit he application")}
-        Button(onClick =  {navController.navigate("B.O.S Android");})
-        {Text("Change the screen") }
+        {Text("Read the new application info") }
+
+        Button(onClick =  { navController.navigate("B.O.S Android"); })
+        {Text("Change the screen");}
+        Text(message_txt);
+        Text("   ");
+        Text(painter_int);
 
         Button(onClick =  {
             if(isExpanded.isNotEmpty())
@@ -107,63 +114,78 @@ fun Greeting(name: String, myPainter: Int, modifier: Modifier = Modifier, navCon
         }
         repeat(number) {
             Image(
-                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                painter = painterResource(myPainter),
-                contentDescription = "Contact profile picture"
+                    //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                    painter = painterResource(myPainter),
+                    contentDescription = "Contact profile picture"
             )
             Text(text = " ")
             Text(
-                text = string,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleSmall
+                    text = string,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.titleSmall
             )
             Text(text = " ")
             Text(
-                text = string,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
+                    text = string,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge
             )
         }
     }
 }
 
 @Composable
-fun Responding(name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
+fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
     )
     {
-        var isExpanded  by remember{ mutableStateOf("") };
-        Button(onClick =  {navController.navigateUp();})
-        {Text("Change the screen back");}
-        repeat(1) {
-            Image(
-                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                painter = painterResource(myPainter),
-                contentDescription = "Contact profile picture"
-            )
-            Text("Change the screen back");
-            Text(name);
-        }
-    }
-}
+        Button(onClick = {
+            try {
+                val fileOutputStream_txt =
+                    context.openFileOutput("My_android_text.txt", Context.MODE_PRIVATE);
+                val outputWriter_txt = OutputStreamWriter(fileOutputStream_txt);
+                outputWriter_txt.write("B.O.S");
+                outputWriter_txt.close();
 
-@Composable
-fun ComposeNavigation(name: String, myPainter: Int) {
-    val navController:NavHostController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = "S.O.B Android"
-    ) {
-        composable("S.O.B Android") {
-            Greeting("Greeting", myPainter, navController = navController)
-        }
-        composable("B.O.S Android") {
-            Responding("Responding", myPainter, navController = navController)
-        }
+                val fileOutputStream_img =
+                    context.openFileOutput("My_android_img.txt", Context.MODE_PRIVATE);
+                val outputWriter_img = OutputStreamWriter(fileOutputStream_img);
+                val data: Int = androidx.core.R.drawable.ic_call_answer;
+                outputWriter_img.write(data.toString());
+                outputWriter_img.close();
+            } catch (e: Exception) {
+                System.exit(0);
+            }
+        })
+        { Text("Save the new application info") }
+        Button(onClick = { navController.navigateUp(); })
+        { Text("Change the screen back");}
+        repeat(1) {
+                Image(
+                    painter = painterResource(myPainter),
+                    contentDescription = "Contact profile picture"
+                )
+                Text(name);
+            }
     }
 }
+    @Composable
+    fun ComposeNavigation(context: Context, name: String, myPainter: Int) {
+        val navController: NavHostController = rememberNavController()
+        NavHost(
+            navController = navController,
+            startDestination = "S.O.B Android"
+        ) {
+            composable("S.O.B Android") {
+                Greeting(context, name, myPainter, navController = navController)
+            }
+            composable("B.O.S Android") {
+                Responding(context, name, myPainter, navController = navController)
+            }
+        }
+    }
 
 Changes in build.gradle(app)
 dependencies {
