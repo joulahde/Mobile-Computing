@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity()  {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                        modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     val context = LocalContext.current;
                     var message_txt: String;
@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity()  {
 @Composable
 fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
-            Modifier
-                    .verticalScroll(rememberScrollState())
+        Modifier
+            .verticalScroll(rememberScrollState())
     )
     {
         val number:Int = 10;
@@ -71,6 +71,7 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
         var message_txt:String by remember {mutableStateOf("")};
         var painter_int:String by remember {mutableStateOf("")};
         var isExpanded:String  by remember{ mutableStateOf("") };
+        var isValueEmpty:String by remember{ mutableStateOf("") };
 
         Button(onClick = {
             try{
@@ -82,6 +83,7 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
                 painter_int = inputReader_img.readText();
                 inputReader_txt.close();
                 inputReader_img.close();
+                isValueEmpty = " ";
             }
             catch(e:Exception) {
                 name.replace(name, "S.O.S Android");
@@ -94,8 +96,13 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
         {Text("Change the screen");}
         Text(message_txt);
         Text("   ");
-        Text(painter_int);
-
+        if(isValueEmpty.isNotEmpty()){
+            Text(painter_int);
+            Image(
+                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                painter = painterResource(painter_int.toInt()),
+                contentDescription = "Contact profile picture"
+            )}
         Button(onClick =  {
             if(isExpanded.isNotEmpty())
                 isExpanded = "";
@@ -114,21 +121,21 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
         }
         repeat(number) {
             Image(
-                    //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                    painter = painterResource(myPainter),
-                    contentDescription = "Contact profile picture"
+                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                painter = painterResource(myPainter),
+                contentDescription = "Contact profile picture"
             )
             Text(text = " ")
             Text(
-                    text = string,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleSmall
+                text = string,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.titleSmall
             )
             Text(text = " ")
             Text(
-                    text = string,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyLarge
+                text = string,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -163,29 +170,29 @@ fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier
         Button(onClick = { navController.navigateUp(); })
         { Text("Change the screen back");}
         repeat(1) {
-                Image(
-                    painter = painterResource(myPainter),
-                    contentDescription = "Contact profile picture"
-                )
-                Text(name);
-            }
-    }
-}
-    @Composable
-    fun ComposeNavigation(context: Context, name: String, myPainter: Int) {
-        val navController: NavHostController = rememberNavController()
-        NavHost(
-            navController = navController,
-            startDestination = "S.O.B Android"
-        ) {
-            composable("S.O.B Android") {
-                Greeting(context, name, myPainter, navController = navController)
-            }
-            composable("B.O.S Android") {
-                Responding(context, name, myPainter, navController = navController)
-            }
+            Image(
+                painter = painterResource(myPainter),
+                contentDescription = "Contact profile picture"
+            )
+            Text(name);
         }
     }
+}
+@Composable
+fun ComposeNavigation(context: Context, name: String, myPainter: Int) {
+    val navController: NavHostController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "S.O.B Android"
+    ) {
+        composable("S.O.B Android") {
+            Greeting(context, name, myPainter, navController = navController)
+        }
+        composable("B.O.S Android") {
+            Responding(context, name, myPainter, navController = navController)
+        }
+    }
+}
 
 Changes in build.gradle(app)
 dependencies {
