@@ -36,6 +36,21 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
 import android.text.TextUtils.replace
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.unit.dp
+
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.TextField
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.layout.padding
 
 class MainActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +59,7 @@ class MainActivity : ComponentActivity()  {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                 ) {
                     val context = LocalContext.current;
                     var message_txt: String;
@@ -62,8 +77,8 @@ class MainActivity : ComponentActivity()  {
 @Composable
 fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
+            Modifier
+                    .verticalScroll(rememberScrollState())
     )
     {
         val number:Int = 10;
@@ -99,9 +114,9 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
         if(isValueEmpty.isNotEmpty()){
             Text(painter_int);
             Image(
-                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                painter = painterResource(painter_int.toInt()),
-                contentDescription = "Contact profile picture"
+                    //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                    painter = painterResource(painter_int.toInt()),
+                    contentDescription = "Contact profile picture"
             )}
         Button(onClick =  {
             if(isExpanded.isNotEmpty())
@@ -121,21 +136,21 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
         }
         repeat(number) {
             Image(
-                //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
-                painter = painterResource(myPainter),
-                contentDescription = "Contact profile picture"
+                    //painter = painterResource(androidx.core.R.drawable.ic_call_answer_video_low),
+                    painter = painterResource(myPainter),
+                    contentDescription = "Contact profile picture"
             )
             Text(text = " ")
             Text(
-                text = string,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.titleSmall
+                    text = string,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.titleSmall
             )
             Text(text = " ")
             Text(
-                text = string,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
+                    text = string,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -144,24 +159,67 @@ fun Greeting(context:Context, name: String, myPainter: Int, modifier: Modifier =
 @Composable
 fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier = Modifier, navController: NavController) {
     Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
+            Modifier
+                    .verticalScroll(rememberScrollState())
     )
     {
+        var skipPartiallyExpanded by remember { mutableStateOf(false) }
+        var edgeToEdgeEnabled by remember { mutableStateOf(false) }
+
+        Row(
+                Modifier
+                    .toggleable(
+                    value = skipPartiallyExpanded,
+                    role = Role.Checkbox,
+                    onValueChange = { checked -> skipPartiallyExpanded = checked }))
+            {
+                Checkbox(checked = skipPartiallyExpanded, onCheckedChange = null)
+                Spacer(Modifier.width(16.dp))
+                Text("androidx.core.R.drawable.ic_call_answer_video_low")
+            }
+        Row(
+                Modifier
+                    .toggleable(
+                    value = edgeToEdgeEnabled,
+                    role = Role.Checkbox,
+                    onValueChange = { checked -> edgeToEdgeEnabled = checked })
+            ) {
+                Checkbox(checked = edgeToEdgeEnabled, onCheckedChange = null)
+                Spacer(Modifier.width(16.dp))
+                Text("androidx.core.R.drawable.ic_call_answer")
+            }
+
+        var user_text by remember { mutableStateOf("") }
+        OutlinedTextField(
+            value = user_text,
+            onValueChange = { user_text = it },
+            modifier = Modifier.padding(horizontal = 16.dp),
+            label = { Text("User text field") }
+        )
+
         Button(onClick = {
             try {
-                val fileOutputStream_txt =
-                    context.openFileOutput("My_android_text.txt", Context.MODE_PRIVATE);
-                val outputWriter_txt = OutputStreamWriter(fileOutputStream_txt);
-                outputWriter_txt.write("B.O.S");
-                outputWriter_txt.close();
+                if (!(skipPartiallyExpanded == true && edgeToEdgeEnabled == true)) {
+                    val fileOutputStream_txt =
+                        context.openFileOutput("My_android_text.txt", Context.MODE_PRIVATE);
+                    val outputWriter_txt = OutputStreamWriter(fileOutputStream_txt);
+                    outputWriter_txt.write(user_text);
+                    outputWriter_txt.close();
 
-                val fileOutputStream_img =
-                    context.openFileOutput("My_android_img.txt", Context.MODE_PRIVATE);
-                val outputWriter_img = OutputStreamWriter(fileOutputStream_img);
-                val data: Int = androidx.core.R.drawable.ic_call_answer;
-                outputWriter_img.write(data.toString());
-                outputWriter_img.close();
+                    val fileOutputStream_img =
+                            context.openFileOutput("My_android_img.txt", Context.MODE_PRIVATE);
+                    val outputWriter_img = OutputStreamWriter(fileOutputStream_img);
+
+                    if (skipPartiallyExpanded == true && edgeToEdgeEnabled == false) {
+                        var data1: Int = androidx.core.R.drawable.ic_call_answer;
+                        outputWriter_img.write(data1.toString())
+                    };
+                    if (edgeToEdgeEnabled == true && skipPartiallyExpanded == false) {
+                        var data2: Int = androidx.core.R.drawable.ic_call_answer_video_low;
+                        outputWriter_img.write(data2.toString())
+                    };
+                    outputWriter_img.close();
+                }
             } catch (e: Exception) {
                 System.exit(0);
             }
@@ -171,8 +229,8 @@ fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier
         { Text("Change the screen back");}
         repeat(1) {
             Image(
-                painter = painterResource(myPainter),
-                contentDescription = "Contact profile picture"
+                    painter = painterResource(myPainter),
+                    contentDescription = "Contact profile picture"
             )
             Text(name);
         }
@@ -182,8 +240,8 @@ fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier
 fun ComposeNavigation(context: Context, name: String, myPainter: Int) {
     val navController: NavHostController = rememberNavController()
     NavHost(
-        navController = navController,
-        startDestination = "S.O.B Android"
+            navController = navController,
+            startDestination = "S.O.B Android"
     ) {
         composable("S.O.B Android") {
             Greeting(context, name, myPainter, navController = navController)
