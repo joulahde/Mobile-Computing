@@ -199,7 +199,9 @@ fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier
 
         Button(onClick = {
             try {
-                if (!(skipPartiallyExpanded == true && edgeToEdgeEnabled == true)) {
+                if (!(skipPartiallyExpanded == true && edgeToEdgeEnabled == true) &&
+                    !(skipPartiallyExpanded == false && edgeToEdgeEnabled == false) &&
+                    user_text.isNotEmpty()) {
                     val fileOutputStream_txt =
                         context.openFileOutput("My_android_text.txt", Context.MODE_PRIVATE);
                     val outputWriter_txt = OutputStreamWriter(fileOutputStream_txt);
@@ -211,11 +213,11 @@ fun Responding(context:Context, name: String, myPainter: Int, modifier: Modifier
                     val outputWriter_img = OutputStreamWriter(fileOutputStream_img);
 
                     if (skipPartiallyExpanded == true && edgeToEdgeEnabled == false) {
-                        var data1: Int = androidx.core.R.drawable.ic_call_answer;
+                        var data1: Int = androidx.core.R.drawable.ic_call_answer_video_low;
                         outputWriter_img.write(data1.toString())
                     };
                     if (edgeToEdgeEnabled == true && skipPartiallyExpanded == false) {
-                        var data2: Int = androidx.core.R.drawable.ic_call_answer_video_low;
+                        var data2: Int = androidx.core.R.drawable.ic_call_answer;
                         outputWriter_img.write(data2.toString())
                     };
                     outputWriter_img.close();
